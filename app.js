@@ -15,6 +15,7 @@ dontenv.load();
 const indexRouter = require('./routes/index');
 const userRouter = require('./routes/user');
 const infusionsoftAuthRouter = require('./routes/infusionsoftAuth');
+const whrouter = require('./routes/webinarham');
 
 // This will configure Passport to use Auth0
 const strategy = new Auth0Strategy(
@@ -95,6 +96,7 @@ app.use(function(req, res, next) {
 app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/infusionsoftauth', infusionsoftAuthRouter);
+app.use('/webinarham', whrouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
