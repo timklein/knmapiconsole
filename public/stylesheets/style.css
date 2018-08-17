@@ -1,0 +1,31 @@
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic);
+
+body {
+	background: #ecf0f5;
+	font: 14px;
+	font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	font-weight: 400;
+	padding-top: 48px;
+}
+
+.navbar-brand a, a:hover, a:active, a:focus {
+	color: #000;
+	outline: none;
+	text-decoration: none;
+}
+
+b, strong {
+	font-weight: 700;
+}
+
+.footer {
+	position: fixed;
+	bottom: 0;
+	background: #fff;
+	text-align: center;
+	padding: 15px;
+	color: #888;
+	border-top: 1px solid #bbb;
+	width: 100%;
+}
