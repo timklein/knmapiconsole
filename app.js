@@ -12,6 +12,8 @@ const helmet = require('helmet');
 
 dontenv.load();
 
+const db = require('./models/db.js');
+
 const indexRouter = require('./routes/index');
 const userRouter = require('./routes/user');
 const infusionsoftAuthRouter = require('./routes/infusionsoftAuth');

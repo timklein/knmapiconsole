@@ -1,16 +1,16 @@
 const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGODB_CONNECT_STRING);
+// mongoose.connect(process.env.MONGODB_CONNECT_STRING);
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'Connection Error'));
-db.on('open', function() {
-	console.log('Connected to MongoDB');
-});
+// const db = mongoose.connection;
+// db.on('error', console.error.bind(console, 'Connection Error'));
+// db.on('open', function() {
+// 	console.log('Connected to MongoDB');
+// });
 
-// Use native promises
-mongoose.Promise = global.Promise;
+// // Use native promises
+// mongoose.Promise = global.Promise;
 
-const tokenSchema = mongoose.Schema({
+const tokenSchema = new mongoose.Schema({
     connection_name : { type : String },
     app_code : { type : String },
 	access_token : { type : String },
