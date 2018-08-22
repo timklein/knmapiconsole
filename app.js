@@ -13,6 +13,7 @@ const helmet = require('helmet');
 dontenv.load();
 
 const db = require('./models/db.js');
+const agenda = require('./controllers/jobController');
 
 const indexRouter = require('./routes/index');
 const userRouter = require('./routes/user');
