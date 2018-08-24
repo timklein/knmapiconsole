@@ -1,7 +1,15 @@
 const rp = require('request-promise-native');
 const Connection = require('../models/tokens');
+const sgMail = require('@sendgrid/mail');
 
-const baseURL = process.env.INFUSIONSOFT_API_BASE_URL
+const baseURL = process.env.INFUSIONSOFT_API_BASE_URL;
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const msg = {
+	to: process.env.SENDGRID_TO_EMAIL,
+	from: process.env.SENDGRID_FROM_EMAIL,
+	subject: 'KNMAPICONSOLE ERROR',
+};
 
 const controller = {
 
@@ -83,13 +91,21 @@ const controller = {
 					});
 				}
 				else {
+					msg.text = 'Invalid Application ID: ' +  JSON.stringify(req.body.app_id);
+					msg.html = '<p><strong>Invalid Application ID</strong></p><p>' + JSON.stringify(req.body.app_id) + ' is not valid</p>';
+					sgMail.send(msg);
+
 					console.log('Invalid Application ID');
-					console.log(req.body);
+					console.log(req.body.app_id);
 					res.sendStatus(400);
 				}
 			});
 		}
 		else {
+			msg.text = 'Missing Required Key: ' +  JSON.stringify(req.body);
+			msg.html = '<p><strong>Missing Required Key:</strong></p><p>' + JSON.stringify(req.body) + '</p>';
+			sgMail.send(msg);
+
 			console.log('Missing Required Key');
 			console.log(req.body);
 			res.sendStatus(400);
