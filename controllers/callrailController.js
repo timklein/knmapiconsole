@@ -30,25 +30,15 @@ const controller = {
     
             newContact.save(function (err, contact) {
                 if(err) {return console.error(err);}
-    
                 console.log('Contact Saved');
             });
         }
-    
         res.sendStatus(200);
-
     },
-    identifyContact : function (req, res) {
-        
-        let days = 7; // How many days back?
-        let conv = 86400000; // Conversion factor days to milliseconds
-        let startDate = new Date(Date.now() - (days * conv));
-        let endDate = new Date(Date.now() - ((days - 1) * conv));
-        
-        console.log(new Date());
-        console.log(startDate);
-        console.log(endDate);
-    
+    identifyContact : function (contact) {
+ 
+        console.log(contact);
+
     }
 }
 

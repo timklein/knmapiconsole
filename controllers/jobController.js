@@ -2,6 +2,8 @@ const Agenda = require('agenda');
 const db = require('../models/db');
 const tokens = require('../models/tokens');
 const request = require('request');
+const Contacts = require('../models/callrailContacts');
+const callrail = require('./callrailController');
 
 const agenda = new Agenda({ mongo : db });
 
@@ -76,10 +78,54 @@ agenda.define('Refresh Token', job => {
     });
 });
 
+agenda.define('Identify Contacts', job => {
+	
+	let days = 1; // How many days back?
+	let conv = 86400000; // Conversion factor days to milliseconds
+	let startDate = new Date(Date.now() - (days * conv));
+	let endDate = new Date(Date.now() - ((days - 1) * conv));
+	
+	console.log(new Date());
+	console.log(startDate);
+	console.log(endDate);
+
+	// Find contacts to identify
+	Contacts.find({ 'created_at' : { '$gte' : startDate.toISOString(), '$lt' : endDate.toISOString() }}, (err, contacts) => {
+
+		// if (err) {
+		// 	console.log(err);
+		// }
+
+		// let i = 0;
+		// let records = contacts.length;
+
+		// console.log(records);
+
+		// Send each contact over to callrailController to submit to API
+		contacts.map(contact => callrail.identifyContact(contact));
+
+		// Recursive function to call each item returned by query
+		function call() {
+			callrail.identifyContact(contacts[i]);
+			i++
+			if (i < records) {
+				setTimeout( call , 1000);
+			}			
+		}
+
+		// if (records > 0) {
+		// 	call();
+		// }
+
+	});
+
+});
+
 (async function() {
     
     await agenda.start();
 
     await agenda.every('30 minutes', 'Refresh Token');
+    await agenda.every('30 seconds', 'Identify Contacts');
 
 })();
