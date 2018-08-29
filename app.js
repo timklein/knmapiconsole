@@ -19,6 +19,7 @@ const indexRouter = require('./routes/index');
 const userRouter = require('./routes/user');
 const infusionsoftAuthRouter = require('./routes/infusionsoftAuth');
 const whrouter = require('./routes/webinarham');
+const callrailRouter = require('./routes/callrail');
 
 // This will configure Passport to use Auth0
 const strategy = new Auth0Strategy(
@@ -100,6 +101,7 @@ app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/infusionsoftauth', infusionsoftAuthRouter);
 app.use('/webinarham', whrouter);
+app.use('/callrail', callrailRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
