@@ -69,7 +69,7 @@ const controller = {
 				if (contacts.contacts.length) {
 					let contact = contacts.contacts[0].id;
 					req.body.contactID = contact;
-					console.log('Contact ID ' + contact + ' found for email ' + req.body.email);
+					console.log('Contact ID ' + contact + ' found for email ' + req.body.email + ' in application ' + req.body.app_id);
 					resolve(req.body);
 				}
 				else {
@@ -137,13 +137,23 @@ const controller = {
 				.then( function (contactModel) {
 					if (contactModel.custom_fields.length) {
 
-						for (let index = 0; index < contactModel.custom_fields.length; index++) {	
-							const field = contactModel.custom_fields[index];
+						// An array of custom field objects is returned
+						let customFieldArray = contactModel.custom_fields;
 
-							if (field.label === 'Webinar Total View Time') {
-								req.body.fieldID = field.id
-								resolve(req.body);						
-							}
+						// Filter the array to search for the desired field label
+						let result = customFieldArray.filter( field => field.label === 'Webinar Total View Time');
+
+						// If there is a matching field, proceed
+						if (result.length) {
+							// Get the custom field id
+							let fieldID = result[0].id;
+							// Add the field id to the request body
+							req.body.fieldID = fieldID;
+							resolve(req.body);
+						}
+						// If there is no matching custom field, fail
+						else {
+							reject('The "Webinar Total View Time" custom field does not exist in ' + req.body.app_id);
 						}
 					}
 					else {
