@@ -11,6 +11,7 @@ const msg = {
 	subject: 'KNMAPICONSOLE ERROR',
 };
 
+// Helper function for handling missing keys
 const missingKey = (data) => {
 	msg.text = 'Missing Required Key: ' +  JSON.stringify(data);
 			msg.html = '<p><strong>Missing Required Key:</strong></p><p>' + JSON.stringify(data) + '</p>';
@@ -96,14 +97,24 @@ const controller = {
 
 				rp(tagOptions)
 				.then( function (tags) {
-					for (let index = 0; index < tags.tags.length; index++) {
-						
-						let tag = tags.tags[index];
-	
-						if (req.body.tag === tag.name) {
-							req.body.tagID = tag.id;
-							resolve(req.body);
-						}
+
+					// An array of objects is returned
+					let tagsArray = tags.tags;
+
+					// Filter the array to search for a tag that matches the request
+					let result = tagsArray.filter( tag => req.body.tag === tag.name);
+
+					// If there is a matching tag, proceed
+					if (result.length) {
+						// Get the tag id
+						let tagID = result[0].id;
+						// Add the tag id to the request body
+						req.body.tagID = tagID;
+						resolve(req.body);
+					}
+					// If there is no tag, fail
+					else {
+						reject('Tag "' + req.body.tag + '" does not exist in ' + req.body.app_id);
 					}
 				})
 				.catch( function (err) {
@@ -131,7 +142,6 @@ const controller = {
 
 							if (field.label === 'Webinar Total View Time') {
 								req.body.fieldID = field.id
-								console.log(req.body.fieldID);
 								resolve(req.body);						
 							}
 						}
@@ -154,7 +164,6 @@ const controller = {
 
 		Promise.all([promise1, promise2])
 		.then( values => {
-			console.log(values);
 			next();
 		})
 		.catch( reason => {
@@ -196,13 +205,12 @@ const controller = {
 			});
 		}
 		else {
-			console.log('No Tag Applied');
 			next();
 		}
 	},
 	updateTime : function (req, res) {
 		
-		if (req.body.total_time) {
+		if (req.body.total_time && !req.body.tagID) {
 			
 			let contactOptions = {
 				method : 'PATCH',
@@ -238,6 +246,10 @@ const controller = {
 				res.sendStatus(200);
 			});
 
+		}
+		else if (req.body.tagID && req.body.total_time) {
+			console.log('Tag & Time Submitted - Can not process both');
+			res.sendStatus(200);
 		}
 		else {
 			console.log('No View Time Submitted');
