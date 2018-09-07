@@ -92,14 +92,14 @@ agenda.define('Identify Contacts', job => {
 	// Find contacts to identify
 	Contacts.find({ 'created_at' : { '$gte' : startDate.toISOString(), '$lt' : endDate.toISOString() }}, (err, contacts) => {
 
-		// if (err) {
-		// 	console.log(err);
-		// }
+		if (err) {
+			console.log(err);
+		}
 
-		// let i = 0;
-		// let records = contacts.length;
+		let i = 0;
+		let records = contacts.length;
 
-		// console.log(records);
+		console.log(records);
 
 		// Send each contact over to callrailController to submit to API
 		contacts.map(contact => callrail.identifyContact(contact));
