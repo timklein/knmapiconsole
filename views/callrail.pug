@@ -4,8 +4,18 @@ block content
 	.content.p-5
 		h1.pb-4 Control Panel #[small.font-weight-light.pl-3.text-black-50(style="font-size: .5em;") CallRail Settings] 
 		br
-		h3 CallRail Configuration Settings
-		br
+		h3 Create CallRail Configuration
+		form.form-inline(action="/infusionsoftauth")
+			.input-group.w-75.pb-3
+				input.form-control.mr-2(type="text" name="companyName" placeholder="CallRail company name (exact)..." required)
+				.invalid-feedback Please enter a name for your connection
+				select.form-control.custom-select(name="appName")
+					option(value="none" selected) Please Select an Infusionsoft App...
+					each app in apps
+						- var name = app.app_code + ' - ' + app.connection_name
+						option(value=app.app_code) #{name}
+				.input-group-append
+					button.btn.btn-outline-secondary(type=button) Create association
 		h3.pt-3 Existing Configurations
 		br
 		p No Configurations Exist

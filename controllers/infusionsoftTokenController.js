@@ -130,6 +130,15 @@ const controller = {
 			
 			});
 		});
+	},
+	buildList : function (req, res, next) {
+		
+		Connection.find().sort({ connection_name : 1 }).exec((err, res) => {
+			req.apps = res;
+			console.log(req.apps);
+			next();
+		});
+	
 	}
 }
 
