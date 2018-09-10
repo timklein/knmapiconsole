@@ -8,14 +8,16 @@ var router = express.Router();
 router.post('/', callrail.createContact);
 
 //GET Console page for CallRail Settings
-router.get('/', connections.buildList, (req, res) => {
+router.get('/', connections.buildList, callrail.configList, (req, res) => {
     res.render('callrail', {
         user : req.user,
-        apps : req.apps
+        apps : req.apps,
+        configurations : req.configurations
     });
 });
 
-module.exports = router;
+router.get('/callconfig', callrail.createConfig);
 
+module.exports = router;
 
 // REMEMBER TO ADD ENSURELOGGEDIN!!!

@@ -5,11 +5,11 @@ block content
 		h1.pb-4 Control Panel #[small.font-weight-light.pl-3.text-black-50(style="font-size: .5em;") CallRail Settings] 
 		br
 		h3 Create CallRail Configuration
-		form.form-inline(action="/infusionsoftauth")
+		form.form-inline(action="/callrail/callconfig")
 			.input-group.w-75.pb-3
 				input.form-control.mr-2(type="text" name="companyName" placeholder="CallRail company name (exact)..." required)
 				.invalid-feedback Please enter a name for your connection
-				select.form-control.custom-select(name="appName")
+				select.form-control.custom-select(name="appCode")
 					option(value="none" selected) Please Select an Infusionsoft App...
 					each app in apps
 						- var name = app.app_code + ' - ' + app.connection_name
@@ -17,5 +17,10 @@ block content
 				.input-group-append
 					button.btn.btn-outline-secondary(type=button) Create association
 		h3.pt-3 Existing Configurations
-		br
-		p No Configurations Exist
+		if configurations
+			each config in configurations
+				.d-flex.align-items-center.border.rounded.mb-2.shadow-sm.bg-white
+					p.mb-0.px-3 #{config.app_code}
+					p.mr-auto.mb-0.px-5.font-weight-bold #{config.company_name}
+		else 
+			p No Configurations Exist

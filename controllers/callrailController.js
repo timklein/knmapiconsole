@@ -1,5 +1,6 @@
 const rp = require('request-promise-native');
 const Contact = require('../models/callrailContacts');
+const CallConfig = require('../models/callrailConfig');
 
 const controller = {
 
@@ -39,6 +40,34 @@ const controller = {
  
         console.log(contact);
 
+    },
+    createConfig : function (req, res) {
+
+        let newConfig = new CallConfig ({
+            company_name : req.query.companyName,
+            app_code : req.query.appCode
+        });
+        
+        newConfig.save( function (err, config) {
+            if(err) {return console.error(err);}
+            console.log('Config Saved');
+            res.redirect('/callrail')
+        });
+    },
+    configList : function (req, res, next) {
+        CallConfig.find({}, function (err, configurations) {
+
+            if (err) {
+				res.send(err);
+            }
+            else if (configurations.length) {
+                req.configurations = configurations
+                next();
+            }
+            else {
+                next();
+            }
+        });
     }
 }
 
