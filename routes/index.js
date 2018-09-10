@@ -18,7 +18,7 @@ router.get('/logout', function(req, res) {
 
 // GET route for authorization callback URL
 router.get('/callback', passport.authenticate('auth0', {failureRedirect: '/failure'}), function(req, res) {
-	res.redirect(req.session.returnTo || '/user');
+	res.redirect(req.session.returnTo || '/connections');
 });
 
 // GET route for failed logins from Auth0

@@ -16,7 +16,7 @@ const db = require('./models/db.js');
 const agenda = require('./controllers/jobController');
 
 const indexRouter = require('./routes/index');
-const userRouter = require('./routes/user');
+const connectionRouter = require('./routes/connections');
 const infusionsoftAuthRouter = require('./routes/infusionsoftAuth');
 const whrouter = require('./routes/webinarham');
 const callrailRouter = require('./routes/callrail');
@@ -98,7 +98,7 @@ app.use(function(req, res, next) {
 });
 
 app.use('/', indexRouter);
-app.use('/user', userRouter);
+app.use('/connections', connectionRouter);
 app.use('/infusionsoftauth', infusionsoftAuthRouter);
 app.use('/webinarham', whrouter);
 app.use('/callrail', callrailRouter);

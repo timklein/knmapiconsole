@@ -64,7 +64,7 @@ const controller = {
 				if (err) {
 					console.log(err);
 				}
-				return res.redirect('/user')
+				return res.redirect('/connections')
 			});
 
 		} catch(error) {
@@ -126,7 +126,7 @@ const controller = {
 					});
 				}
 
-				res.redirect('/user')
+				res.redirect('/connections')
 			
 			});
 		});

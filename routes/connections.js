@@ -14,13 +14,13 @@ router.get('/', ensureLoggedIn, function(req, res, next) {
 				res.send(err);
 		} 
 		else if (tokens.length) {
-		    res.render('user', {
+		    res.render('connections', {
 		        tokens : tokens,
 		        user : req.user
 			});
 		}
 		else {
-			res.render('user', {
+			res.render('connections', {
 				user : req.user
 			});
 		}
