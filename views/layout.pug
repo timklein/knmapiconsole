@@ -7,9 +7,15 @@ html
 		link(rel='stylesheet', href='/stylesheets/style.css')
 		link(rel="icon" type="image/png" href="/favicon.png")
 	body
-		nav.navbar.fixed-top.navbar-light.bg-white
+		nav.navbar.navbar-expand-sm.fixed-top.navbar-light.bg-white
 			span.navbar-brand
 				a(href=env.BASE_URL) #[strong KNM]APIConsole
+			button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup")
+				span.navbar-toggler-icon
+			.collapse.navbar-collapse#navbarNavAltMarkup
+				.navbar-nav
+					a.nav-item.nav-link(href="/connections") Connections
+					a.nav-item.nav-link(href="/callrail") CallRail Configuration
 			if user
 				span.float-right
 					img.rounded-circle(src=user.picture width=30 height=30)
