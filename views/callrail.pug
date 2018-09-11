@@ -18,9 +18,12 @@ block content
 					button.btn.btn-outline-secondary(type=button) Create association
 		h3.pt-3 Existing Configurations
 		if configurations
-			each config in configurations
-				.d-flex.align-items-center.border.rounded.mb-2.shadow-sm.bg-white
-					p.mb-0.px-3 #{config.app_code}
-					p.mr-auto.mb-0.px-5.font-weight-bold #{config.company_name}
+			.container.px-0.mx-0
+				.row.mx-0
+					each config in configurations
+						.col-lg-6.pl-0.justify-content-start
+							.d-flex.align-items-center.border.rounded.mb-2.shadow-sm.bg-white
+								p.mb-0.px-3 #{config.app_code}
+								p.mr-auto.mb-0.px-5.font-weight-bold #{config.company_name}
 		else 
 			p No Configurations Exist
