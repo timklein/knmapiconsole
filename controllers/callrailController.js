@@ -6,7 +6,7 @@ const controller = {
 
     createContact : function (req, res) {
 
-        if ( ! req.body.first_call ) {
+        if ( req.body.first_call ) {
 
             let newContact = new Contact ({
                 id : req.body.id,
@@ -31,8 +31,11 @@ const controller = {
     
             newContact.save(function (err, contact) {
                 if(err) {return console.error(err);}
-                console.log('Contact Saved');
+                console.log('CallRail Contact Saved');
             });
+        }
+        else {
+            console.log('Not First Call');
         }
         res.sendStatus(200);
     },

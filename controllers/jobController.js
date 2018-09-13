@@ -126,6 +126,6 @@ agenda.define('Identify Contacts', job => {
     await agenda.start();
 
     await agenda.every('30 minutes', 'Refresh Token');
-    await agenda.every('30 seconds', 'Identify Contacts');
+    // await agenda.every('30 seconds', 'Identify Contacts');
 
 })();
