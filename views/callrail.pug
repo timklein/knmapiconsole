@@ -4,7 +4,7 @@ block content
 	.content.p-5
 		h1.pb-4 Control Panel #[small.font-weight-light.pl-3.text-black-50(style="font-size: .5em;") CallRail Settings] 
 		br
-		h3 Create CallRail Configuration
+		h3 Create CallRail Association
 		form.form-inline(action="/callrail/callconfig")
 			.input-group.w-75.pb-3
 				input.form-control.mr-2(type="text" name="companyName" placeholder="CallRail company name (exact)..." required)
@@ -16,9 +16,9 @@ block content
 						option(value=app.app_code) #{name}
 				.input-group-append
 					button.btn.btn-outline-secondary(type=button) Create association
-		h3.pt-3 Existing Configurations
+		h3.pt-3 Existing Associations
 		if configurations
-			.container.px-0.mx-0
+			.container-fluid.px-0.mx-0
 				.row.mx-0
 					each config in configurations
 						.col-lg-6.pl-0.justify-content-start
@@ -27,3 +27,6 @@ block content
 								p.mr-auto.mb-0.px-5.font-weight-bold #{config.company_name}
 		else 
 			p No Configurations Exist
+
+block script
+	script $( function () {$( '.navbar-nav a:nth-child(2)' ).addClass( 'active' );});
