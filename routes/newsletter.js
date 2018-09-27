@@ -5,7 +5,7 @@ const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
 const connections = require('../controllers/infusionsoftTokenController');
 const newsletter = require('../controllers/newsletterController');
 
-//GET Console page for CallRail Settings
+//GET Console page for Newsletter Settings
 router.get('/', ensureLoggedIn, connections.buildList, newsletter.configList, (req, res) => {
     console.log(req.configurations);
     res.render('newsletter', {
