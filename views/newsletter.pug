@@ -16,8 +16,18 @@ block content
 						option(value=app.app_code) #{name}
 				.input-group-append
 					button.btn.btn-outline-secondary(type=button) Create association
-		h3.pt-3 Existing Associations
+		h3.pt-3 Existing Configurations
 		br
+		if configurations
+			.container-fluid.px-0.mx-0
+				.row.mx-0
+					each config in configurations
+						.col-lg-6.pl-0.justify-content-start
+							.d-flex.align-items-center.border.rounded.mb-2.shadow-sm.bg-white
+								p.mb-0.px-3 #{config.app_code}
+								p.mr-auto.mb-0.px-5.font-weight-bold #{config.feed_url}
+		else 
+			p No Configurations Exist
 
 block script
 	script $( function () {$( '.navbar-nav a:nth-child(3)' ).addClass( 'active' );});
