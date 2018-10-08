@@ -21,9 +21,9 @@ block content
 			.container-fluid.px-0.mx-0
 				.row.mx-0
 					each config in configurations
-						.col-lg-6.pl-0.justify-content-start
-							.d-flex.align-items-center.border.rounded.mb-2.shadow-sm.bg-white
-								p.mb-0.px-3 #{config.app_code}
+						.col-lg-6.pl-0
+							.d-flex.border.rounded.mb-2.shadow-sm.bg-white
+								p.col-sm-1.mb-0.px-3 #{config.app_code}
 								p.mr-auto.mb-0.px-5.font-weight-bold #{config.company_name}
 		else 
 			p No Configurations Exist
