@@ -35,6 +35,7 @@
 		"pug": "2.0.0-beta11",
 		"request": "^2.88.0",
 		"request-promise-native": "^1.0.5",
+		"rss-parser": "^3.5.2",
 		"simple-oauth2": "^2.2.1"
 	}
 }

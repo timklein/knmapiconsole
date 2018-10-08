@@ -7,7 +7,6 @@ const newsletter = require('../controllers/newsletterController');
 
 //GET Console page for Newsletter Settings
 router.get('/', ensureLoggedIn, connections.buildList, newsletter.configList, (req, res) => {
-    console.log(req.configurations);
     res.render('newsletter', {
         user : req.user,
         apps : req.apps,

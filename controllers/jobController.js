@@ -1,11 +1,14 @@
 const Agenda = require('agenda');
 const db = require('../models/db');
 const tokens = require('../models/tokens');
-const request = require('request');
+const Newsletters = require('../models/newsletterConfig');
 const Contacts = require('../models/callrailContacts');
+const request = require('request');
 const callrail = require('./callrailController');
+const Parser = require('rss-parser');
 
 const agenda = new Agenda({ mongo : db });
+const parser = new Parser();
 
 console.log('Starting Agenda');
 
@@ -121,11 +124,72 @@ agenda.define('Identify Contacts', job => {
 
 });
 
+agenda.define('Weekly Newsletter', job => {
+
+	// Get all of the Newsletter COnfigurations
+	Newsletters.find({}, function(err, newsletterArray) {
+
+		// For each configuration, get the token and send a request for the associated feed
+		newsletterArray.forEach(newsletter => {
+			
+			tokens.findOne({'app_code' : newsletter.app_code}, function (err, token) {
+
+				(async () => {
+			 
+					let feed = await parser.parseURL(newsletter.feed_url);
+					
+					const msg = {
+					  subject: 'The Fix! Weekly Blog Updates from ' + feed.title,
+					  html: '<div style="text-align: center;"><a href="http://regenexx.com"><img src="https://getregenerative.com/wp-content/uploads/2018/09/newsletter_logo.png" width="500px" align="center"></a><br /><h1 style="color: grey;">This Week\'s Blog Posts from Get Regenerative</h1><h2 style="color: #0b1423d9;">The latest articles, outcomes, news and commentary on regenerative orthopedic medicine.</h2></div><hr />'
+					};
+					
+					for (let index = 0; index < 5; index++) {
+					  
+					  const element = feed.items[index];
+					  
+					  msg.html += '<h3 style="margin-top: 10px;"><a href="' + element.link + '">' + element.title + '</a></h3><p>' + element.content + '</p><hr />'
+					  
+					}
+
+					// Base64 encode the html content for the email
+					let encodedString = Buffer.from(msg.html).toString('base64');
+
+					request ({
+
+						method : 'POST',
+						url : process.env.INFUSIONSOFT_API_BASE_URL + "/emails/queue",
+						qs : { access_token : token.access_token},
+						json : true,
+						body : {
+							"contacts" : [635],
+							"html_content" : encodedString,
+							"subject" : msg.subject,
+							"user_id" : 317
+						}
+
+					}, function(err, resp, body) {
+		
+						if (err) {
+							return console.error(err);
+						}
+						else if (body) {
+							console.log(body);
+						}
+
+					});
+
+				})();
+			});
+		});
+	});
+});
+
 (async function() {
     
     await agenda.start();
 
     await agenda.every('30 minutes', 'Refresh Token');
+    await agenda.every('30 seconds', 'Weekly Newsletter');
     // await agenda.every('30 seconds', 'Identify Contacts');
 
 })();
