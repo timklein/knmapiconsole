@@ -189,7 +189,7 @@ agenda.define('Weekly Newsletter', job => {
     await agenda.start();
 
     await agenda.every('30 minutes', 'Refresh Token');
-    await agenda.every('30 seconds', 'Weekly Newsletter');
+    // await agenda.every('1 week', 'Weekly Newsletter');
     // await agenda.every('30 seconds', 'Identify Contacts');
 
 })();
