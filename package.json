@@ -36,6 +36,7 @@
 		"request": "^2.88.0",
 		"request-promise-native": "^1.0.5",
 		"rss-parser": "^3.5.2",
-		"simple-oauth2": "^2.2.1"
+		"simple-oauth2": "^2.2.1",
+		"wealthengine-node-sdk": "0.0.4"
 	}
 }
