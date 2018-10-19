@@ -3,7 +3,6 @@ const WealthEngineSDK = require('wealthengine-node-sdk');
 // Pass False or delete parameter to direct requests to WE Production API
 const WeAPI = new WealthEngineSDK(process.env.WEALTHENGINE_KEY, true);
 
-
 const controller = {
 
     test : function (req, res) {
@@ -12,16 +11,54 @@ const controller = {
         
         //Create the request object
         let params = {
-            email_address: req.body.email, 
-            // first_name: "HAMBURT", 
-            // last_name: "PORKINGTON"
+            email_address: req.body.email,
+            // Clean Phone# to just numeric digits
+            phone: req.body.phone.replace(/\D/g,''),
+            last_name: req.body.lastName,
+            first_name: req.body.firstName,
+            address_line1: req.body.address1,
+            address_line2: req.body.address2,
+            city: req.body.city,
+            state: req.body.state,
+            zip: req.body.zip,
+            mode : "full"
         }; 
-        
-        //Look up a WealthEngine profile by email and [name]
-        WeAPI.getProfileByEmail(params, function(err, code, result){
-            if (err) console.error(err); 
-            res.send(result); 
-        });
+
+        console.log(params);
+
+        if (params.address_line1 && params.city && params.state && params.zip) {
+
+            //Look up a WealthEngine profile by address and [name]
+            WeAPI.getProfileByAddress(params, function(err, code, result){
+                if (err) console.error(err); 
+                console.dir(result);
+                console.log('Results by Address');
+                res.sendStatus('200');
+            }); 
+        }
+        else if (params.email_address) {
+            
+            //Look up a WealthEngine profile by email and [name]
+            WeAPI.getProfileByEmail(params, function(err, code, result){
+                if (err) console.error(err); 
+                console.dir(result);
+                console.log('Results by Email');
+                res.sendStatus('200');
+            });
+        }
+        else if (params.phone) {
+
+            //Look up a WealthEngine profile by phone number and [name]
+            WeAPI.getProfileByPhone(params, function(err, code, result){
+                if (err) console.error(err);
+                console.dir(result);
+                console.log('Results by Phone');
+                res.sendStatus('200');
+            });
+        }
+        else {
+            res.status('400').send('Bad Request: Not enough data sent to retrieve results');
+        }
     }
 }
 
