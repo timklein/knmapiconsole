@@ -8,22 +8,28 @@ const controller = {
     test : function (req, res) {
 
         console.log(req.body);
-        
+
         //Create the request object
         let params = {
-            email_address: req.body.email,
-            // Clean Phone# to just numeric digits
-            phone: req.body.phone.replace(/\D/g,''),
-            last_name: req.body.lastName,
-            first_name: req.body.firstName,
-            address_line1: req.body.address1,
-            address_line2: req.body.address2,
-            city: req.body.city,
-            state: req.body.state,
-            zip: req.body.zip,
+            email_address: req.body.email || '',
+            last_name: req.body.lastName || '',
+            first_name: req.body.firstName || '',
+            address_line1: req.body.address1 || '',
+            address_line2: req.body.address2 || '',
+            city: req.body.city || '',
+            state: req.body.state || '',
+            zip: req.body.zip || '',
             mode : "full"
         }; 
-
+        
+        // Clean Phone# to just numeric digits or assign empty value
+        if (req.body.phone) {
+            params.phone = req.body.phone.replace(/\D/g,'');  
+        }
+        else {
+            params.phone = '';
+        }
+        
         console.log(params);
 
         if (params.address_line1 && params.city && params.state && params.zip) {
