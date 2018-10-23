@@ -3,10 +3,19 @@ const WealthEngineSDK = require('wealthengine-node-sdk');
 // Pass False or delete parameter to direct requests to WE Production API
 const WeAPI = new WealthEngineSDK(process.env.WEALTHENGINE_KEY, true);
 const Result = require('../models/weData');
+const Token = require('../models/tokens');
+const sgMail = require('@sendgrid/mail');
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const msg = {
+	to: process.env.SENDGRID_TO_EMAIL,
+	from: process.env.SENDGRID_FROM_EMAIL,
+	subject: 'KNMAPICONSOLE ERROR',
+};
 
 const controller = {
 
-    test : function (req, res) {
+    retrieveData : function (req, res, next) {
 
         console.log(req.body);
 
@@ -64,9 +73,9 @@ const controller = {
             
             // If results are found, return these and do not search WE
             if (result) {
-                console.log(result);
+                req.body.weScore = result.weData.wealth.networth.value;
                 console.log('Results Returned from DB');
-                res.sendStatus('200');
+                next();
             }
             // If no results, then query WE as appropriate
             else {
@@ -77,8 +86,9 @@ const controller = {
                     WeAPI.getProfileByAddress(params, function(err, code, result){
                         if (err) console.error(err); 
                         saveResult(result);
+                        req.body.weScore = result.wealth.networth.value;
                         console.log('Results by Address');
-                        res.sendStatus('200');
+                        next();
                     }); 
                 }
                 else if (params.email_address) {
@@ -87,8 +97,9 @@ const controller = {
                     WeAPI.getProfileByEmail(params, function(err, code, result){
                         if (err) console.error(err); 
                         saveResult(result);
+                        req.body.weScore = result.wealth.networth.value;
                         console.log('Results by Email');
-                        res.sendStatus('200');
+                        next();
                     });
                 }
                 else if (params.phone) {
@@ -97,8 +108,9 @@ const controller = {
                     WeAPI.getProfileByPhone(params, function(err, code, result){
                         if (err) console.error(err);
                         saveResult(result);
+                        req.body.weScore = result.wealth.networth.value;
                         console.log('Results by Phone');
-                        res.sendStatus('200');
+                        next();
                     });
                 }
                 else {
@@ -106,6 +118,27 @@ const controller = {
                 }
            }
         });
+    },
+    update : function (req, res) {
+
+        Token.findOne({app_code : req.body.integration}, 'access_token', function (err, token) {
+            
+            if(err){console.error(err);}
+
+            if (token) {
+                req.body.token = token.access_token;
+                console.log(req.body);
+                res.sendStatus('200');
+            }
+            else {
+                msg.text = 'Invalid Application ID: ' +  JSON.stringify(req.body.integration);
+				msg.html = '<p><strong>Invalid Application ID</strong></p><p>' + JSON.stringify(req.body.integration) + ' is not configured in KNMAPIConsole</p>';
+				sgMail.send(msg);
+                console.log('No Access Token for Integration ' + req.body.integration);
+                res.sendStatus('200');
+            }
+        });
+
     }
 }
 

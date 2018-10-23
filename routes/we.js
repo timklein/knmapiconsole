@@ -5,6 +5,6 @@ const we = require('../controllers/wealthengineController');
 var router = express.Router();
 
 // POST Callrail
-router.post('/', we.test);
+router.post('/', we.retrieveData, we.update);
 
 module.exports = router;
