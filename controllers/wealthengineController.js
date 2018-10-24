@@ -2,9 +2,13 @@ const WealthEngineSDK = require('wealthengine-node-sdk');
 // True flag sends requests to WE Sandbox rather than production.
 // Pass False or delete parameter to direct requests to WE Production API
 const WeAPI = new WealthEngineSDK(process.env.WEALTHENGINE_KEY, true);
+const rp = require('request-promise-native');
+const sgMail = require('@sendgrid/mail');
+
+const baseURL = process.env.INFUSIONSOFT_API_BASE_URL;
+
 const Result = require('../models/weData');
 const Token = require('../models/tokens');
-const sgMail = require('@sendgrid/mail');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const msg = {
@@ -119,26 +123,113 @@ const controller = {
            }
         });
     },
-    update : function (req, res) {
+    update : function (req, res, next) {
 
         Token.findOne({app_code : req.body.integration}, 'access_token', function (err, token) {
             
             if(err){console.error(err);}
-
+            
             if (token) {
-                req.body.token = token.access_token;
-                console.log(req.body);
-                res.sendStatus('200');
+                
+                req.body.access_token = token.access_token;
+
+                let modelOptions = {
+					uri :  baseURL + '/contacts/model',
+					qs : {
+						access_token : req.body.access_token
+					},
+					json : true
+                };
+                
+                rp(modelOptions)
+                .then( function (contactModel) {
+                    if (contactModel.custom_fields.length) {
+
+                        // An array of custom field objects is returned
+						let customFieldArray = contactModel.custom_fields;
+
+						// Filter the array to search for the desired field label
+						let result = customFieldArray.filter( field => field.label === 'WE NetWorth Score');
+                        
+                        // If there is a matching field, proceed
+						if (result.length) {
+							// Get the custom field id
+							let fieldID = result[0].id;
+							// Add the field id to the request body
+                            req.body.fieldID = fieldID;
+                            console.log(req.body);
+                            next();
+                        }
+						// If there is no matching custom field, fail
+						else {
+                            msg.text = 'The "WE NetWorth Score" custom field does not exist in ' +  JSON.stringify(req.body.integration);
+				            msg.html = '<p><strong>Invalid Custom Field</strong></p><p>"WE NetWorth Score" is not configured in application ' + JSON.stringify(req.body.integration) + '</p>';
+				            sgMail.send(msg);
+                            
+                            console.log('The "WE NetWorth Score" custom field does not exist in ' + req.body.integration);
+                            res.sendStatus('200');
+						}
+                    }
+                    else {
+                        msg.text = 'No custom fields found in ' +  JSON.stringify(req.body.integration);
+				        msg.html = '<p><strong>Invalid Custom Field</strong></p><p>No custom fields found in application ' + JSON.stringify(req.body.integration) + '</p>';
+                        sgMail.send(msg);
+                        
+                        console.log('No Custom Fields Found For ' + req.body.integration);
+                        res.sendStatus(200);
+                    }
+                })
+                .catch( function (err) {
+					console.log(err);
+					console.log('Contact Model API Call Failed');
+					res.sendStatus(200);
+				});
             }
             else {
                 msg.text = 'Invalid Application ID: ' +  JSON.stringify(req.body.integration);
 				msg.html = '<p><strong>Invalid Application ID</strong></p><p>' + JSON.stringify(req.body.integration) + ' is not configured in KNMAPIConsole</p>';
-				sgMail.send(msg);
+                sgMail.send(msg);
+                
                 console.log('No Access Token for Integration ' + req.body.integration);
                 res.sendStatus('200');
             }
         });
+    },
+    updateScore : function (req, res) {
 
+        let contactOptions = {
+            method : 'PATCH',
+            uri :  baseURL + '/contacts/' + req.body.id,
+            qs : {
+                access_token : req.body.access_token
+            },
+            body : {
+                custom_fields : [
+                    {
+                        content : req.body.weScore,
+                        id : req.body.fieldID
+                    }
+                ]
+            },
+            json : true
+        };
+
+        rp(contactOptions)
+        .then( function (response) {
+
+            if (response) {
+                
+                let message = JSON.stringify(response);
+
+                console.log('Custom Field Update Response: ' + message);
+				res.sendStatus(200);
+            }
+        })
+        .catch( function (err) {
+            console.log(err);
+            console.log('Custom Field Update Failed');
+            res.sendStatus(200);
+        });
     }
 }
 
