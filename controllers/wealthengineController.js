@@ -1,7 +1,7 @@
 const WealthEngineSDK = require('wealthengine-node-sdk');
 // True flag sends requests to WE Sandbox rather than production.
 // Pass False or delete parameter to direct requests to WE Production API
-const WeAPI = new WealthEngineSDK(process.env.WEALTHENGINE_KEY, true);
+const WeAPI = new WealthEngineSDK(process.env.WEALTHENGINE_KEY, false);
 const rp = require('request-promise-native');
 const sgMail = require('@sendgrid/mail');
 
