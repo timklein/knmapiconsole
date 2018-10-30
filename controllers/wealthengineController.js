@@ -89,10 +89,16 @@ const controller = {
                     //Look up a WealthEngine profile by address and [name]
                     WeAPI.getProfileByAddress(params, function(err, code, result){
                         if (err) console.error(err); 
-                        saveResult(result);
-                        req.body.weScore = result.wealth.networth.value;
-                        console.log('Results by Address');
-                        next();
+                        if (code == 555) {
+                            console.log('Status ' + code + ': No Results Returned');
+                            res.sendStatus('200');
+                        }
+                        else {
+                            saveResult(result);
+                            req.body.weScore = result.wealth.networth.value;
+                            console.log('Results by Address');
+                            next();
+                        }
                     }); 
                 }
                 else if (params.email_address) {
@@ -100,10 +106,16 @@ const controller = {
                     //Look up a WealthEngine profile by email and [name]
                     WeAPI.getProfileByEmail(params, function(err, code, result){
                         if (err) console.error(err); 
-                        saveResult(result);
-                        req.body.weScore = result.wealth.networth.value;
-                        console.log('Results by Email');
-                        next();
+                        if (code == 555) {
+                            console.log('Status ' + code + ': No Results Returned');
+                            res.sendStatus('200');
+                        }
+                        else {
+                            saveResult(result);
+                            req.body.weScore = result.wealth.networth.value;
+                            console.log('Results by Email');
+                            next();
+                        }
                     });
                 }
                 else if (params.phone) {
@@ -111,10 +123,16 @@ const controller = {
                     //Look up a WealthEngine profile by phone number and [name]
                     WeAPI.getProfileByPhone(params, function(err, code, result){
                         if (err) console.error(err);
-                        saveResult(result);
-                        req.body.weScore = result.wealth.networth.value;
-                        console.log('Results by Phone');
-                        next();
+                        if (code == 555) {
+                            console.log('Status ' + code + ': No Results Returned');
+                            res.sendStatus('200');
+                        }
+                        else {
+                            saveResult(result);
+                            req.body.weScore = result.wealth.networth.value;
+                            console.log('Results by Phone');
+                            next();
+                        }
                     });
                 }
                 else {
@@ -226,7 +244,7 @@ const controller = {
             }
         })
         .catch( function (err) {
-            console.log(err);
+            console.log(err.message);
             console.log('Custom Field Update Failed');
             res.sendStatus(200);
         });
