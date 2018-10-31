@@ -9,8 +9,20 @@ const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
 const flash = require('connect-flash');
 const helmet = require('helmet');
+const sgMail = require('@sendgrid/mail');
 
 dontenv.load();
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+// Create and send initialization on application restart
+const initializeMsg = {
+	to: process.env.SENDGRID_TO_EMAIL,
+	from: process.env.SENDGRID_FROM_EMAIL,
+	subject: 'KNMAPICONSOLE RESTART',
+	text: 'KNMApiConsole Application has restarted'
+};
+
+sgMail.send(initializeMsg);
 
 const db = require('./models/db.js');
 const agenda = require('./controllers/jobController');
