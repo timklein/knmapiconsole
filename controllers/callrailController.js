@@ -71,6 +71,41 @@ const controller = {
                 next();
             }
         });
+    },
+    sendSMS : function (req, res) {
+        console.log(req.body);
+
+        if (req.body.fromPhone && req.body.callrailCompanyID && req.body.toPhone && req.body.message && req.body.callrailAccountID && req.body.callrailAPIKey) {
+            
+            const options = {
+                method: 'POST',
+                uri: process.env.CALLRAIL_API_BASE_URL + '/' + req.body.callrailAccountID + '/text-messages.json',
+                headers: {
+                    'Authorization' : 'Token token=' + req.body.callrailAPIKey,
+                    'User-Agent': 'Request-Promise'
+                },
+                body: {
+                    company_id : req.body.callrailCompanyID,
+                    tracking_number : req.body.fromPhone,
+                    customer_phone_number : req.body.toPhone,
+                    content : req.body.message
+                },
+                json: true // Automatically parses the JSON string in the response
+            };
+
+            rp(options)
+            .then(function (parsedReply) {
+                console.log(parsedReply);
+                res.sendStatus(200);
+            })
+            .catch(function (err) {
+                console.log(err.message);
+                res.sendStatus(200);
+            })
+        }
+        else {
+            res.status(400).send('Bad Request: Missing Required Data Fields');
+        }
     }
 }
 

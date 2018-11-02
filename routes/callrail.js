@@ -1,9 +1,10 @@
 //Routes for Callrail Updates to Infusionsoft
 const express = require('express');
+var router = express.Router();
 const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
 const callrail = require('../controllers/callrailController');
 const connections = require('../controllers/infusionsoftTokenController');
-var router = express.Router();
+const knmapi = require('../controllers/knmapiController');
 
 // POST Callrail
 router.post('/', callrail.createContact);
@@ -18,5 +19,7 @@ router.get('/', ensureLoggedIn, connections.buildList, callrail.configList, (req
 });
 
 router.get('/callconfig', callrail.createConfig);
+
+router.post('/sms', knmapi.accessConfirmation, callrail.sendSMS);
 
 module.exports = router;
