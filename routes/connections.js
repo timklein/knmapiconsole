@@ -25,7 +25,7 @@ router.get('/', ensureLoggedIn, function(req, res, next) {
 			});
 		}
 
-	}).sort({ 'expires_at' : -1 });
+	}).sort({ 'expires_at' : 1 });
 });
 
 module.exports = router;
