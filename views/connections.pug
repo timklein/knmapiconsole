@@ -16,25 +16,28 @@ block content
 		h3.pt-3 Existing Connections
 		br
 		if tokens
-			each token in tokens
-				.d-flex.align-items-center.border.rounded.mb-3.shadow-sm.bg-white
-					img.m-2(src='/images/Infusionsoft_128x128.png' width='48px' height='48px') 
-					p.mb-0.px-3 #{token.app_code}
-					p.mr-auto.mb-0.px-5.font-weight-bold #{token.connection_name}
-					form.d-flex.align-items-center(action="/infusionsoftauth/isrefresh")
-						- var date = new Date();
-						- var exp = token.expires_at;
-						- var app = token.app_code;
-						- var name = token.connection_name;
-						- var id = token._id;
-						if date > exp
-							p.mb-0.px-3.text-danger #{token.expires_at}
-						else
-							p.mb-0.px-3 #{token.expires_at}
-						input(type='hidden' name='app' value=app)
-						input(type='hidden' name='name' value=name)
-						input(type='hidden' name='id' value=id)
-						button.btn.btn-outline-secondary.mx-5(type='submit') Refresh Token
+			.container-fluid.px-0.mx-0
+				.row.mx-0
+					each token in tokens
+						.col-lg-12.pl-0
+							.d-flex.align-items-center.border.rounded.mb-3.shadow-sm.bg-white
+								img.m-2(src='/images/Infusionsoft_128x128.png' width='48px' height='48px') 
+								p.col-sm-1.mb-0.px-3 #{token.app_code}
+								p.mr-auto.mb-0.px-5.font-weight-bold #{token.connection_name}
+								form.d-flex.align-items-center(action="/infusionsoftauth/isrefresh")
+									- var date = new Date();
+									- var exp = token.expires_at;
+									- var app = token.app_code;
+									- var name = token.connection_name;
+									- var id = token._id;
+									if date > exp
+										p.mb-0.px-3.text-danger #{token.expires_at}
+									else
+										p.mb-0.px-3 #{token.expires_at}
+									input(type='hidden' name='app' value=app)
+									input(type='hidden' name='name' value=name)
+									input(type='hidden' name='id' value=id)
+									button.btn.btn-outline-secondary.mx-5(type='submit') Refresh Token
 		else
 			p No Connections Exist
 
