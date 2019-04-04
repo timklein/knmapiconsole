@@ -77,7 +77,14 @@ const controller = {
             
             // If results are found, return these and do not search WE
             if (result) {
-                req.body.weScore = result.weData.wealth.networth.value;
+                // req.body.weScore = result.weData.wealth.networth.value;
+                req.body.weAge = result.weData.identity.age || '';
+                req.body.weGender = result.weData.identity.gender.text || '';
+                req.body.weMarital = result.weData.identity.marital_status.text || '';
+                req.body.weCash = result.weData.wealth.cash_on_hand.text || '';
+                req.body.weWorth = result.weData.wealth.networth.text || '';
+                req.body.weAssets = result.weData.wealth.total_assets.text || '';
+                req.body.weIncome = result.weData.wealth.total_income.text || '';
                 console.log('Results Returned from DB');
                 next();
             }
@@ -95,7 +102,14 @@ const controller = {
                         }
                         else {
                             saveResult(result);
-                            req.body.weScore = result.wealth.networth.value;
+                            // req.body.weScore = result.wealth.networth.value;
+                            req.body.weAge = result.identity.age || '';
+                            req.body.weGender = result.identity.gender.text || '';
+                            req.body.weMarital = result.identity.marital_status.text || '';
+                            req.body.weCash = result.wealth.cash_on_hand.text || '';
+                            req.body.weWorth = result.wealth.networth.text || '';
+                            req.body.weAssets = result.wealth.total_assets.text || '';
+                            req.body.weIncome = result.wealth.total_income.text || '';
                             console.log('Results by Address');
                             next();
                         }
@@ -112,7 +126,14 @@ const controller = {
                         }
                         else {
                             saveResult(result);
-                            req.body.weScore = result.wealth.networth.value;
+                            // req.body.weScore = result.wealth.networth.value;
+                            req.body.weAge = result.identity.age || '';
+                            req.body.weGender = result.identity.gender.text || '';
+                            req.body.weMarital = result.identity.marital_status.text || '';
+                            req.body.weCash = result.wealth.cash_on_hand.text || '';
+                            req.body.weWorth = result.wealth.networth.text || '';
+                            req.body.weAssets = result.wealth.total_assets.text || '';
+                            req.body.weIncome = result.wealth.total_income.text || '';
                             console.log('Results by Email');
                             next();
                         }
@@ -129,7 +150,14 @@ const controller = {
                         }
                         else {
                             saveResult(result);
-                            req.body.weScore = result.wealth.networth.value;
+                            // req.body.weScore = result.wealth.networth.value;
+                            req.body.weAge = result.identity.age || '';
+                            req.body.weGender = result.identity.gender.text || '';
+                            req.body.weMarital = result.identity.marital_status.text || '';
+                            req.body.weCash = result.wealth.cash_on_hand.text || '';
+                            req.body.weWorth = result.wealth.networth.text || '';
+                            req.body.weAssets = result.wealth.total_assets.text || '';
+                            req.body.weIncome = result.wealth.total_income.text || '';
                             console.log('Results by Phone');
                             next();
                         }
@@ -163,20 +191,53 @@ const controller = {
                 .then( function (contactModel) {
                     if (contactModel.custom_fields.length) {
 
-                        // An array of custom field objects is returned
-						let customFieldArray = contactModel.custom_fields;
+                        // An array of field labels to look for
+                        let labels = ['Age', 'Gender', 'Marital Status', 'Cash on Hand', 'Net Worth', 'Total Assets', 'Total Income'];
 
-						// Filter the array to search for the desired field label
-						let result = customFieldArray.filter( field => field.label === 'WE NetWorth Score');
+                        // An array of custom field objects is returned
+                        let customFieldArray = contactModel.custom_fields;
+
+						// Filter the array to search for the desired field labels
+                        let result = customFieldArray.filter( field => labels.includes(field.label));
                         
-                        // If there is a matching field, proceed
+                        console.log(result);
+
+                        // Sort function
+                        function compare(a, b) {
+                            const labelA = a.label.toUpperCase();
+                            const labelB = b.label.toUpperCase();
+
+                            let comparison = 0;
+
+                            if (labelA > labelB) {
+                                comparison = 1;                                
+                            }
+                            else if (labelA < labelB) {
+                                comparison = -1;                                
+                            }
+
+                            return comparison;
+                        };
+
+                        result.sort(compare);
+
+                        console.log(result);
+                        
+                        // If there are matching fields, proceed
 						if (result.length) {
 							// Get the custom field id
-							let fieldID = result[0].id;
-							// Add the field id to the request body
-                            req.body.fieldID = fieldID;
+							// let fieldID = result[0].id;
+							// Add the field ids to the request body
+                            req.body.ageFieldID = result[0].id || '';
+                            req.body.cashFieldID = result[1].id || '';
+                            req.body.genderFieldID = result[2].id || '';
+                            req.body.maritalFieldID = result[3].id || '';
+                            req.body.worthFieldID = result[4].id || '';
+                            req.body.assetsFieldID = result[5].id || '';
+                            req.body.incomeFieldID = result[6].id || '';
                             console.log(req.body);
                             next();
+                            // res.sendStatus(200);
                         }
 						// If there is no matching custom field, fail
 						else {
@@ -224,8 +285,32 @@ const controller = {
             body : {
                 custom_fields : [
                     {
-                        content : req.body.weScore,
-                        id : req.body.fieldID
+                        content : req.body.weAge,
+                        id : req.body.ageFieldID
+                    },
+                    {
+                        content : req.body.weGender,
+                        id : req.body.genderFieldID
+                    },
+                    {
+                        content : req.body.weMarital,
+                        id : req.body.maritalFieldID
+                    },
+                    {
+                        content : req.body.weCash,
+                        id : req.body.cashFieldID
+                    },
+                    {
+                        content : req.body.weWorth,
+                        id : req.body.worthFieldID
+                    },
+                    {
+                        content : req.body.weAssets,
+                        id : req.body.assetsFieldID
+                    },
+                    {
+                        content : req.body.weIncome,
+                        id : req.body.incomeFieldID
                     }
                 ]
             },
