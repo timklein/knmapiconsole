@@ -57,7 +57,7 @@ const controller = {
             address_line2: req.body.address2 || '',
             city: req.body.city || '',
             state: req.body.state || '',
-            zip: req.body.zip || '',
+            zip: req.body.zip.substr(0, 5) || '',
             mode : "full"
         }; 
         
