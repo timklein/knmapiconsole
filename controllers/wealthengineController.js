@@ -72,19 +72,19 @@ const controller = {
         console.log(params);
         
         // Search for previously returned results in the database
-        Result.findOne({ id : req.body.id, integration : req.body.integration}, function (err, result) {
+        Result.findOne({ id : req.body.id, integration : req.body.integration}, function (err, ( 'marital_status' in result.weData.wealth ) ? result) {
             if(err){console.error(err);}
             
             // If results are found, return these and do not search WE
             if (result) {
                 // req.body.weScore = result.weData.wealth.networth.value;
                 req.body.weAge = result.weData.identity.age || '';
-                req.body.weGender = result.weData.identity.gender.text || '';
-                req.body.weMarital = result.weData.identity.marital_status.text || '';
-                req.body.weCash = result.weData.wealth.cash_on_hand.text || '';
-                req.body.weWorth = result.weData.wealth.networth.text || '';
-                req.body.weAssets = result.weData.wealth.total_assets.text || '';
-                req.body.weIncome = result.weData.wealth.total_income.text || '';
+                req.body.weGender = ( 'gender' in result.weData.identity ) ? result.weData.identity.gender.text || '' : '';
+                req.body.weMarital = ( 'marital_status' in result.weData.identity ) ? result.weData.identity.marital_status.text || '' : '';
+                req.body.weCash = ( 'marital_status' in result.weData.wealth ) ? result.weData.wealth.cash_on_hand.text || '' : '';
+                req.body.weWorth = ( 'networth' in result.weData.wealth ) ? result.weData.wealth.networth.text || '' : '';
+                req.body.weAssets = ( 'total_assets' in result.weData.wealth ) ? result.weData.wealth.total_assets.text || '' : '';
+                req.body.weIncome = ( 'total_income' in result.weData.wealth ) ? result.weData.wealth.total_income.text || '' : '';
                 console.log('Results Returned from DB');
                 next();
             }
@@ -104,12 +104,12 @@ const controller = {
                             saveResult(result);
                             // req.body.weScore = result.wealth.networth.value;
                             req.body.weAge = result.identity.age || '';
-                            req.body.weGender = result.identity.gender.text || '';
-                            req.body.weMarital = result.identity.marital_status.text || '';
-                            req.body.weCash = result.wealth.cash_on_hand.text || '';
-                            req.body.weWorth = result.wealth.networth.text || '';
-                            req.body.weAssets = result.wealth.total_assets.text || '';
-                            req.body.weIncome = result.wealth.total_income.text || '';
+                            req.body.weGender = ( 'gender' in result.identity ) ? result.identity.gender.text || '' : '';
+                            req.body.weMarital = ('marital_status' in result.identity) ? result.identity.marital_status.text || '' : ''; 
+                            req.body.weCash = ('cash_on_hand' in result.wealth) ? result.wealth.cash_on_hand.text || '' : '';
+                            req.body.weWorth = ('networth' in result.wealth) ? result.wealth.networth.text || '' : '';
+                            req.body.weAssets = ('total_assets' in result.wealth) ? result.wealth.total_assets.text || '' : '';
+                            req.body.weIncome = ('total_income' in result.wealth) ? result.wealth.total_income.text || '' : '';
                             console.log('Results by Address');
                             next();
                         }
@@ -128,12 +128,12 @@ const controller = {
                             saveResult(result);
                             // req.body.weScore = result.wealth.networth.value;
                             req.body.weAge = result.identity.age || '';
-                            req.body.weGender = result.identity.gender.text || '';
-                            req.body.weMarital = result.identity.marital_status.text || '';
-                            req.body.weCash = result.wealth.cash_on_hand.text || '';
-                            req.body.weWorth = result.wealth.networth.text || '';
-                            req.body.weAssets = result.wealth.total_assets.text || '';
-                            req.body.weIncome = result.wealth.total_income.text || '';
+                            req.body.weGender = ( 'gender' in result.identity ) ? result.identity.gender.text || '' : '';
+                            req.body.weMarital = ('marital_status' in result.identity) ? result.identity.marital_status.text || '' : ''; 
+                            req.body.weCash = ('cash_on_hand' in result.wealth) ? result.wealth.cash_on_hand.text || '' : '';
+                            req.body.weWorth = ('networth' in result.wealth) ? result.wealth.networth.text || '' : '';
+                            req.body.weAssets = ('total_assets' in result.wealth) ? result.wealth.total_assets.text || '' : '';
+                            req.body.weIncome = ('total_income' in result.wealth) ? result.wealth.total_income.text || '' : '';
                             console.log('Results by Email');
                             next();
                         }
@@ -152,12 +152,12 @@ const controller = {
                             saveResult(result);
                             // req.body.weScore = result.wealth.networth.value;
                             req.body.weAge = result.identity.age || '';
-                            req.body.weGender = result.identity.gender.text || '';
-                            req.body.weMarital = result.identity.marital_status.text || '';
-                            req.body.weCash = result.wealth.cash_on_hand.text || '';
-                            req.body.weWorth = result.wealth.networth.text || '';
-                            req.body.weAssets = result.wealth.total_assets.text || '';
-                            req.body.weIncome = result.wealth.total_income.text || '';
+                            req.body.weGender = ( 'gender' in result.identity ) ? result.identity.gender.text || '' : '';
+                            req.body.weMarital = ('marital_status' in result.identity) ? result.identity.marital_status.text || '' : ''; 
+                            req.body.weCash = ('cash_on_hand' in result.wealth) ? result.wealth.cash_on_hand.text || '' : '';
+                            req.body.weWorth = ('networth' in result.wealth) ? result.wealth.networth.text || '' : '';
+                            req.body.weAssets = ('total_assets' in result.wealth) ? result.wealth.total_assets.text || '' : '';
+                            req.body.weIncome = ('total_income' in result.wealth) ? result.wealth.total_income.text || '' : '';
                             console.log('Results by Phone');
                             next();
                         }
