@@ -72,7 +72,7 @@ const controller = {
         console.log(params);
         
         // Search for previously returned results in the database
-        Result.findOne({ id : req.body.id, integration : req.body.integration}, function (err, ( 'marital_status' in result.weData.wealth ) ? result) {
+        Result.findOne({ id : req.body.id, integration : req.body.integration}, function (err, result) {
             if(err){console.error(err);}
             
             // If results are found, return these and do not search WE
