@@ -161,10 +161,10 @@ agenda.define('Weekly Newsletter', job => {
 						qs : { access_token : token.access_token},
 						json : true,
 						body : {
-							"contacts" : [635],
+							"contacts" : [25607],
 							"html_content" : encodedString,
 							"subject" : msg.subject,
-							"user_id" : 317
+							"user_id" : newsletter.from_id
 						}
 
 					}, function(err, resp, body) {
@@ -189,7 +189,7 @@ agenda.define('Weekly Newsletter', job => {
     await agenda.start();
 
     await agenda.every('30 minutes', 'Refresh Token');
-    // await agenda.every('1 week', 'Weekly Newsletter');
+    await agenda.every('1 week', 'Weekly Newsletter');
     // await agenda.every('30 seconds', 'Identify Contacts');
 
 })();
