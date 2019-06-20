@@ -7,7 +7,9 @@ const controller = {
 
         let newConfig = new Newsletter ({
             feed_url : req.query.rssFeed,
-            app_code : req.query.appCode
+            app_code : req.query.appCode,
+            from_id : req.query.userID,
+            tag_id : req.query.tagID
         });
         
         newConfig.save( function (err, config) {

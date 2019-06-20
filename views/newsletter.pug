@@ -6,9 +6,11 @@ block content
 		br
 		h3 Create Newsletter Configuration
 		form.form-inline(action="/newsletter/rssconfig")
-			.input-group.w-75.pb-3
+			.input-group.pb-3
 				input.form-control.mr-2(type="text" name="rssFeed" placeholder="Please enter the feed url..." required)
 				.invalid-feedback Please enter a url for this feed
+				input.form-control.mr-2(type="text" name="tagID" placeholder="Please enter the tag ID number..." required)
+				input.form-control.mr-2(type="text" name="userID" placeholder="ID number of the Infusionsoft user account to send from..." required)
 				select.form-control.custom-select(name="appCode")
 					option(value="none" selected) Please Select an Infusionsoft App...
 					each app in apps
@@ -16,7 +18,7 @@ block content
 						option(value=app.app_code) #{name}
 				.input-group-append
 					button.btn.btn-outline-secondary(type=button) Create association
-		h3.pt-3 Existing Configurations
+		h3.pt-3 Existing Configurations #[small.font-weight-light.pl-3.text-black-50(style="font-size: .5em;") App ID / User ID / Tag ID / Feed Source] 
 		br
 		if configurations
 			.container-fluid.px-0.mx-0
@@ -25,6 +27,8 @@ block content
 						.col-lg-6.pl-0.justify-content-start
 							.d-flex.align-items-center.border.rounded.mb-2.shadow-sm.bg-white
 								p.col-sm-1.mb-0.px-3 #{config.app_code}
+								p.col-sm-1.mb-0.px-5 #{config.from_id}
+								p.col-sm-1.mb-0.px-5 #{config.tag_id}
 								p.mr-auto.mb-0.px-5.font-weight-bold #{config.feed_url}
 		else 
 			p No Configurations Exist
