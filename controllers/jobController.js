@@ -126,7 +126,7 @@ agenda.define('Identify Contacts', job => {
 
 agenda.define('Weekly Newsletter', job => {
 
-	// Get all of the Newsletter COnfigurations
+	// Get all of the Newsletter Configurations
 	Newsletters.find({}, function(err, newsletterArray) {
 
 		// For each configuration, get the token and send a request for the associated feed
@@ -139,8 +139,8 @@ agenda.define('Weekly Newsletter', job => {
 					let feed = await parser.parseURL(newsletter.feed_url);
 					
 					const msg = {
-					  subject: 'The Fix! Weekly Blog Updates from ' + feed.title,
-					  html: '<div style="text-align: center;"><a href="http://regenexx.com"><img src="https://getregenerative.com/wp-content/uploads/2018/09/newsletter_logo.png" width="500px" align="center"></a><br /><h1 style="color: grey;">This Week\'s Blog Posts from Get Regenerative</h1><h2 style="color: #0b1423d9;">The latest articles, outcomes, news and commentary on regenerative orthopedic medicine.</h2></div><hr />'
+					  subject: 'Your Weekly Blog Update from ' + feed.title,
+					  html: '<div style="text-align: center;"><a href="http://regenexx.com"><img src="https://momentumtelecom.com/wp-content/uploads/Regenexx-logo-1-e1534191936522.png" width="500px" align="center"></a><br /><h1 style="color: grey;">This Week\'s Blog Posts from Regenexx</h1><h2 style="color: #0b1423d9;">The latest articles, outcomes, news and commentary on regenerative orthopedic medicine.</h2></div><hr />'
 					};
 					
 					for (let index = 0; index < 5; index++) {
@@ -161,20 +161,23 @@ agenda.define('Weekly Newsletter', job => {
 						qs : { access_token : token.access_token},
 						json : true,
 						body : {
-							"contacts" : [25607],
+							"contacts" : [53063],
 							"html_content" : encodedString,
 							"subject" : msg.subject,
 							"user_id" : newsletter.from_id
 						}
 
 					}, function(err, resp, body) {
-		
+						
+						console.log('status code: ' + resp.statusCode);
+
 						if (err) {
-							return console.error(err);
+							return console.error('error: ' + err);
 						}
 						else if (body) {
-							console.log(body);
+							console.log('body: ' + body);
 						}
+
 
 					});
 
