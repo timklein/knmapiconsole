@@ -107,6 +107,7 @@ const controller = {
                     WeAPI.getProfileByAddress(params, function(err, code, result){
                         if (err) console.error(err); 
                         if (code == 555) {
+                            console.log('Search by Address Submitted'); 
                             console.log('Status ' + code + ': No Results Returned');
                             res.sendStatus('200');
                         }
@@ -131,6 +132,7 @@ const controller = {
                     WeAPI.getProfileByEmail(params, function(err, code, result){
                         if (err) console.error(err); 
                         if (code == 555) {
+                            console.log('Search by Email Submitted'); 
                             console.log('Status ' + code + ': No Results Returned');
                             res.sendStatus('200');
                         }
@@ -155,6 +157,7 @@ const controller = {
                     WeAPI.getProfileByPhone(params, function(err, code, result){
                         if (err) console.error(err);
                         if (code == 555) {
+                            console.log('Search by Phone Number Submitted'); 
                             console.log('Status ' + code + ': No Results Returned');
                             res.sendStatus('200');
                         }
