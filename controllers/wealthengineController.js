@@ -57,16 +57,25 @@ const controller = {
             address_line2: req.body.address2 || '',
             city: req.body.city || '',
             state: req.body.state || '',
-            zip: req.body.zip.substr(0, 5) || '',
+            // zip: req.body.zip.substr(0, 5) || '',
             mode : "full"
         }; 
         
         // Clean Phone# to just numeric digits or assign empty value
-        if (req.body.phone) {
+        if (req.body.phone ) {
             params.phone = req.body.phone.replace(/\D/g,'');  
         }
         else {
             params.phone = '';
+        }
+
+        // If zipcode contains a letter (Canadian zipcode), set to blank
+        // else set to 5 digit zipcode
+        if (req.body.zip.test(/[^0-9]/g)) {
+            params.zip = '';
+        } 
+        else {
+            params.zip = req.body.zip.substr(0, 5);
         }
         
         console.log(params);
