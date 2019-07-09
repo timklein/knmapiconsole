@@ -71,8 +71,8 @@ const controller = {
 
         // If zipcode contains a letter (Canadian zipcode), set to blank
         // else set to 5 digit zipcode
-        let zipTest = req.body.zip.test(/[^0-9]/g);
-        if (zipTest) {
+        let zipRegex = RegExp(/[^0-9]/g);
+        if (zipRegex.test(req.body.zip.substr(0, 5))) {
             params.zip = '';
         } 
         else {
