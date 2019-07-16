@@ -161,7 +161,7 @@ agenda.define('Weekly Newsletter', job => {
 						qs : { access_token : token.access_token},
 						json : true,
 						body : {
-							"contacts" : [53063],
+							"contacts" : [54527],
 							"html_content" : encodedString,
 							"subject" : msg.subject,
 							"user_id" : newsletter.from_id
@@ -169,7 +169,7 @@ agenda.define('Weekly Newsletter', job => {
 
 					}, function(err, resp, body) {
 						
-						console.log('status code: ' + resp.statusCode);
+						console.log('Newsletter Response Status Code: ' + resp.statusCode);
 
 						if (err) {
 							return console.error('error: ' + err);
