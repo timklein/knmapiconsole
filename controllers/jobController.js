@@ -135,9 +135,10 @@ agenda.define('Weekly Newsletter', job => {
 			tokens.findOne({'app_code' : newsletter.app_code}, function (err, token) {
 
 				(async () => {
-			 
-					let feed = await parser.parseURL(newsletter.feed_url);
 					
+					let feed = await parser.parseURL(newsletter.feed_url);
+					let contactsList = [];
+
 					const msg = {
 					  subject: 'Your Weekly Blog Update from ' + feed.title,
 					  html: '<div style="text-align: center;"><a href="http://regenexx.com"><img src="https://momentumtelecom.com/wp-content/uploads/Regenexx-logo-1-e1534191936522.png" width="500px" align="center"></a><br /><h1 style="color: grey;">This Week\'s Blog Posts from Regenexx</h1><h2 style="color: #0b1423d9;">The latest articles, outcomes, news and commentary on regenerative orthopedic medicine.</h2></div><hr />'
@@ -154,33 +155,50 @@ agenda.define('Weekly Newsletter', job => {
 					// Base64 encode the html content for the email
 					let encodedString = Buffer.from(msg.html).toString('base64');
 
+					// Get list of tagged contacts to receive newsletter
 					request ({
-
-						method : 'POST',
-						url : process.env.INFUSIONSOFT_API_BASE_URL + "/emails/queue",
+						method : 'GET',
+						url : process.env.INFUSIONSOFT_API_BASE_URL + "/tags/" + newsletter.tag_id + "/contacts",
 						qs : { access_token : token.access_token},
 						json : true,
-						body : {
-							"contacts" : [54527],
-							"html_content" : encodedString,
-							"subject" : msg.subject,
-							"user_id" : newsletter.from_id
-						}
-
 					}, function(err, resp, body) {
-						
-						console.log('Newsletter Response Status Code: ' + resp.statusCode);
 
 						if (err) {
 							return console.error('error: ' + err);
 						}
-						else if (body) {
-							console.log('body: ' + body);
+						
+						for (let index = 0; index < body.contacts.length; index++) {
+							const element = body.contacts[index];
+							contactsList.push(element.contact.id);
 						}
+						
+						console.log(body.contacts.length + ' Newletter Tagged Contacts for ' + newsletter.app_code);
+						console.log(contactsList);
 
+						request ({
+							method : 'POST',
+							url : process.env.INFUSIONSOFT_API_BASE_URL + "/emails/queue",
+							qs : { access_token : token.access_token},
+							json : true,
+							body : {
+								"contacts" : contactsList,
+								"html_content" : encodedString,
+								"subject" : msg.subject,
+								"user_id" : newsletter.from_id
+							}
+						}, function(err, resp, body) {
+						
+							console.log('Newsletter Response Status Code for ' + newsletter.app_code + ': ' + resp.statusCode);
 
+							if (err) {
+								return console.error('error: ' + err);
+							}
+							else if (body) {
+								console.log('body: ' + body);
+							}
+						});
 					});
-
+					
 				})();
 			});
 		});

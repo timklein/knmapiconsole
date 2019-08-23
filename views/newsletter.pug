@@ -6,7 +6,7 @@ block content
 		br
 		h3 Create Newsletter Configuration
 		form.form-inline(action="/newsletter/rssconfig")
-			.input-group.pb-3
+			.input-group.w-100.pb-3
 				input.form-control.mr-2(type="text" name="rssFeed" placeholder="Please enter the feed url..." required)
 				.invalid-feedback Please enter a url for this feed
 				input.form-control.mr-2(type="text" name="tagID" placeholder="Please enter the tag ID number..." required)
@@ -24,7 +24,7 @@ block content
 			.container-fluid.px-0.mx-0
 				.row.mx-0
 					each config in configurations
-						.col-lg-6.pl-0.justify-content-start
+						.col-lg-6.pl-0
 							.d-flex.align-items-center.border.rounded.mb-2.shadow-sm.bg-white
 								p.col-sm-1.mb-0.px-3 #{config.app_code}
 								p.col-sm-1.mb-0.px-5 #{config.from_id}
