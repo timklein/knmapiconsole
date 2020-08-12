@@ -34,10 +34,15 @@ const controller = {
 
 	getToken : async (req, res) => {
 
+		// Constants needed to convert mangled state string that's passed back from initial request
+		const strg = req.query.state
+		const regex = /&quot;/gi;
+
+
 		// Incoming authorization code needed to request oauth token
 		const authCode = req.query.code;
-		// Parse state data passed from initial request
-		const state = JSON.parse(req.query.state);
+		// Fix and convert returned state data passed from initial request into JSON
+		const state = JSON.parse(strg.replace(regex, '"'));
 		
 		const options = {
 			code: authCode,
