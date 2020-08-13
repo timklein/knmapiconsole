@@ -53,13 +53,11 @@ const controller = {
 	},
 	completeGoal : function (req, res) {
 
-		console.log('Made it to Goal Completion');
-
 		if (req.body.object_keys[0].id) {
 			
 			let goalOptions = {
 				method : 'POST',
-				uri :  baseURL + '/campaigns/goals/' + req.params.integration + req.params.callName,
+				uri :  baseURL + '/campaigns/goals/' + req.params.integration + '/' + req.params.callName,
 				qs : {
 					access_token : req.body.access_token
 				},
