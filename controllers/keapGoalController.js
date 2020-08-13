@@ -74,7 +74,7 @@ const controller = {
 	
 					let msg = JSON.stringify(response);
 					
-					console.log('Goal Completion Response: ' + msg);
+					console.log('Goal Completion Response for Contact ID #' + req.body.object_keys[0].id + ': ' + msg);
 					res.sendStatus(200);
 				}
 			})
