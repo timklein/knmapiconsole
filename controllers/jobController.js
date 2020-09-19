@@ -205,12 +205,34 @@ agenda.define('Weekly Newsletter', job => {
 	});
 });
 
+agenda.define('Corporate Client List Update', job => {
+
+	console.log('Begin Client List Update Process');
+	
+	request({
+		method: 'GET',
+		url: process.env.BASE_URL + 'hooks/clientList',
+		headers: {'Content-Type' : 'application/x-www-form-urlencoded'},
+		form: {
+			knmapikey: process.env.KNM_API_KEY
+		}
+	}), function(err, resp, body) {
+		if(err) {
+			console.log(err);
+		}
+		else if (resp) {
+			console.log('Client List Update Process Complete');
+		}
+	};
+});
+
 (async function() {
     
     await agenda.start();
 
     await agenda.every('30 minutes', 'Refresh Token');
     await agenda.every('1 week', 'Weekly Newsletter');
-    // await agenda.every('30 seconds', 'Identify Contacts');
+	// await agenda.every('30 seconds', 'Identify Contacts');
+    await agenda.every('1 day', 'Corporate Client List Update');
 
 })();
