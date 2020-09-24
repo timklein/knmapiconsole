@@ -6,6 +6,9 @@ const Contacts = require('../models/callrailContacts');
 const request = require('request');
 const callrail = require('./callrailController');
 const Parser = require('rss-parser');
+const sgMail = require('@sendgrid/mail');
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const agenda = new Agenda({ mongo : db });
 const parser = new Parser();
@@ -13,6 +16,12 @@ const parser = new Parser();
 console.log('Starting Agenda');
 
 agenda.define('Refresh Token', job => {
+
+	const msg = {
+		to: process.env.SENDGRID_TO_EMAIL,
+		from: process.env.SENDGRID_FROM_EMAIL,
+		subject: 'KNMAPICONSOLE ERROR: Refresh Token Error in jobController',
+	};
 
 	// Set searchDate to look for tokens within 3 hours of expiring
 	let searchDate = Date.now() + (3*60*60*1000);
@@ -47,34 +56,52 @@ agenda.define('Refresh Token', job => {
 				}
 			}, function(err, resp, body) {
 
-				if (err) { return console.error(err); }
+				if (err) {
+					return console.error(err);
+				}
+				else if (JSON.parse(body).error) {
+					msg.text = 'Token Refresh for ' + connection_name + ' failed';
+                    msg.html = '<p><strong>Token Refresh for ' + connection_name + ' failed</strong></p><p>Please check system logs for error details.</p>';
+					sgMail.send(msg);
+					console.log('Token refresh error response for ' + connection_name + ': ' + resp.body);
+				}
+				else if (JSON.parse(body).access_token) {
+					// Calculate new token expiration from "expires_in" value (multiply by 1000 to convert to milliseconds)
+					let newExpiration = new Date(Date.now() + (JSON.parse(body).expires_in * 1000));
+	
+					let newToken = {
+						connection_name : connection_name,
+						app_code : JSON.parse(body).scope.split("|")[1].substr(0,5),
+						access_token : JSON.parse(body).access_token,
+						token_type : JSON.parse(body).token_type,
+						expires_in : JSON.parse(body).expires_in,
+						refresh_token : JSON.parse(body).refresh_token,
+						scope : JSON.parse(body).scope,
+						expires_at : newExpiration
+					};
+	
+					if (newToken.access_token) {
+	
+						tokens.update({ _id : id }, newToken, {overwrite : true}, function (err, raw) {
+							
+							if(err) {return console.error(err);}
+							
+						});
+					}
+					else {
 
-				// Calculate new token expiration from "expires_in" value (multiply by 1000 to convert to milliseconds)
-				let newExpiration = new Date(Date.now() + (JSON.parse(body).expires_in * 1000));
-
-				let newToken = {
-					connection_name : connection_name,
-					app_code : JSON.parse(body).scope.split("|")[1].substr(0,5),
-					access_token : JSON.parse(body).access_token,
-					token_type : JSON.parse(body).token_type,
-					expires_in : JSON.parse(body).expires_in,
-					refresh_token : JSON.parse(body).refresh_token,
-					scope : JSON.parse(body).scope,
-					expires_at : newExpiration
-				};
-
-				if (newToken.access_token) {
-
-					tokens.update({ _id : id }, newToken, {overwrite : true}, function (err, raw) {
-						
-						if(err) {return console.error(err);}
-						
-						// console.log(raw);
-						
-					});
+						msg.text = 'Error Creating New Token Record for ' + connection_name;
+                    	msg.html = '<p><strong>Error Creating New Token Record for ' + connection_name + '</strong></p><p>Please check system logs for error details.</p>';
+						sgMail.send(msg);
+						console.log('Token record creation error response for ' + connection_name + ': ' + resp.body);
+					}
 				}
 				else {
-					console.log('Access Token Field Blank');
+
+					msg.text = 'Unknown token refresh error for ' + connection_name;
+                    msg.html = '<p><strong>Unknown token refresh error for ' + connection_name + '</strong></p><p>Please check system logs for error details.</p>';
+					sgMail.send(msg);
+					console.log('Unknown token refresh error for ' + connection_name + ': ' + resp);
 				}
 			});
         });
