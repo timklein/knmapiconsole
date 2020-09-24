@@ -82,7 +82,7 @@ agenda.define('Refresh Token', job => {
 	
 					if (newToken.access_token) {
 	
-						tokens.updateOne({ _id : id }, newToken, {overwrite : true}, function (err, raw) {
+						tokens.update({ _id : id }, newToken, {overwrite : true}, function (err, raw) {
 							
 							if(err) {return console.error(err);}
 							
