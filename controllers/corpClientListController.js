@@ -112,7 +112,7 @@ const controller = {
 
                         console.log('Fault: ' + resp.body);
                     }
-                    else {
+                    else if (body.includes('custom_fields')) {
                         const customFields = JSON.parse(resp.body).custom_fields;
                         const foundField = customFields.find(element => element.label == 'Corporate Client Name__');
                         
@@ -151,6 +151,9 @@ const controller = {
                                 }
                             });
                         }
+                    }
+                    else {
+                        console.log('Application ' + params.app_code + ' is unavailable or contains no custom fields');
                     }
                 });
             });
