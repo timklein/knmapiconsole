@@ -67,26 +67,28 @@ const controller = {
 				json : true
 			};
 	
-			rp(goalOptions)
-			.then( function (response) {
-				
-				if (response) {
-	
-					let msg = JSON.stringify(response);
+			setTimeout(() => { 
+				rp(goalOptions)
+				.then( function (response) {
 					
-					console.log('Goal Completion Response for Contact ID #' + req.body.object_keys[0].id + ': ' + msg);
-					res.sendStatus(200);
-				}
-			})
-			.catch( function (err) {
-                msg.text = 'API Error on Goal Completion';
-			    msg.html = '<p><strong>API Error on Goal Completion</strong></p><p>API Call to ' + req.params.integration + ' generated an error for contact ID ' + JSON.stringify(req.body.object_keys[0].id) + ' when trying to complete goal ' + req.params.callName + '. Please review logs for error details.</p>';
-                sgMail.send(msg);
+					if (response) {
+		
+						let msg = JSON.stringify(response);
+						
+						console.log('Goal Completion Response for Contact ID #' + req.body.object_keys[0].id + ': ' + msg);
+						res.sendStatus(200);
+					}
+				})
+				.catch( function (err) {
+					msg.text = 'API Error on Goal Completion';
+					msg.html = '<p><strong>API Error on Goal Completion</strong></p><p>API Call to ' + req.params.integration + ' generated an error for contact ID ' + JSON.stringify(req.body.object_keys[0].id) + ' when trying to complete goal ' + req.params.callName + '. Please review logs for error details.</p>';
+					sgMail.send(msg);
 
-				console.log(req.params.callName + ' goal completion failed in ' + req.params.integration + ' for contact ' + req.body.object_keys[0].id);
-				console.log(err);
-				res.sendStatus(200);
-			});
+					console.log(req.params.callName + ' goal completion failed in ' + req.params.integration + ' for contact ' + req.body.object_keys[0].id);
+					console.log(err);
+					res.sendStatus(200);
+				});
+			}, 5000);
 		}
 		else {
             console.log('Goal Completion Failed: No Contact ID Available');
