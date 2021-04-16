@@ -260,6 +260,6 @@ agenda.define('Corporate Client List Update', job => {
     await agenda.every('30 minutes', 'Refresh Token');
     await agenda.every('1 week', 'Weekly Newsletter');
 	// await agenda.every('30 seconds', 'Identify Contacts');
-    await agenda.every('1 week', 'Corporate Client List Update');
+    await agenda.every('1 day', 'Corporate Client List Update');
 
 })();
