@@ -4,7 +4,7 @@
 	"description": "Klein New Media API Interface Console",
 	"scripts": {
 		"start": "node ./bin/www",
-		"devstart": "NODE_ENV=DEV nodemon ./bin/www"
+		"devstart": "NODE_ENV=DEV node ./bin/www"
 	},
 	"repository": {
 		"type": "git",
